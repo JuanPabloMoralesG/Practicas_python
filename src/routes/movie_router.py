@@ -8,7 +8,7 @@ movies:List[Movie] = []
 movie_router = APIRouter()
 
 @movie_router.get('/',tags=["movie"],status_code=200,response_description="la respuesta debe ser exitosa")
-def get_movies()-> List[Movie]:
+def get_movies()-> JSONResponse:
     return JSONResponse([movie.model_dump() for movie in movies],status_code=200)
 
 @movie_router.get('/{id}',tags=["movie"])
@@ -27,7 +27,7 @@ def get_movie_by_category(category:str =Query(min_length=5,max_length=15))-> Mov
 
 
 @movie_router.post('/',tags=["movie"])
-def post_movie(movie:Movie_create)-> List[Movie]:
+def post_movie(movie:Movie_create)-> JSONResponse:
     movies.append(movie)
     return JSONResponse([movie.model_dump() for movie in movies],status_code=201)
     #return RedirectResponse("/movies",status_code=303)
@@ -49,6 +49,6 @@ def delete_movie(id:int)-> List[Movie]:
             movies.remove(movie)
     return [movie.model_dump() for movie in movies]
 
-@movie_router.get('/get_file')
+@movie_router.get('/get_file',tags=["movies"])
 def get_file():
     return FileResponse('text.txt')
