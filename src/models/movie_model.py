@@ -10,13 +10,13 @@ class Movie(BaseModel):
     year:int
     category:str
 
-class Movie_update(BaseModel):
+class movie_update(BaseModel):
     name:str
     rate:float
     year:int
     category:str
 
-class Movie_create(BaseModel):
+class movie_create(BaseModel):
     id: int
     name:str
     rate:float = Field(ge=0,le=10,default=0)
