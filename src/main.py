@@ -25,5 +25,5 @@ templates = Jinja2Templates(directory=templates_path)
 def home(request:Request):
     return templates.TemplateResponse("index.html",{"request":request,"message":"Welcome"})
 
-app.include_router(prefix="/movies",router=movie_router)
+app.include_router(router=movie_router)
 app.include_router(router=user_routes)
