@@ -1,11 +1,11 @@
 from fastapi import FastAPI, Depends, Form
 from fastapi.requests import Request
-from src.routes.movie_router import movie_router
-from src.routes.user_routes import user_routes
+from routes.movie_router import movie_router
+from routes.user_routes import user_routes
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os
-from src.utils.http_error_handler import http_error_handler
+from utils.http_error_handler import http_error_handler
 
 static_path = os.path.join(os.path.dirname(__file__),"static/")
 templates_path = os.path.join(os.path.dirname(__file__),"templates/")
@@ -25,5 +25,5 @@ templates = Jinja2Templates(directory=templates_path)
 def home(request:Request):
     return templates.TemplateResponse("index.html",{"request":request,"message":"Welcome"})
 
-app.include_router(router=movie_router)
 app.include_router(router=user_routes)
+app.include_router(router=movie_router)

@@ -1,8 +1,8 @@
 from typing import Annotated, List
 from fastapi import Depends, Path, Query, APIRouter
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
-from src.models.movie_model import Movie, movie_create, movie_update
-from src.routes.user_routes import decode_token
+from models.movie_model import Movie, movie_create, movie_update
+from routes.user_routes import decode_token
 
 movies:List[Movie] = []
 

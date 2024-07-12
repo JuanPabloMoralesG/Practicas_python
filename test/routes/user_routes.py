@@ -3,11 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt 
-from src.models.user_model import user
+from models.user_model import user
 from fastapi.responses import JSONResponse
 from decouple import config
-from src.db.client import client
-from src.schemas.user_schema import user_schema, users_schema
+from db.client import client
+from schemas.user_schema import user_schema, users_schema
 
 
 
@@ -34,10 +34,10 @@ def search_user_by_data(value:dict)-> user|dict:
     try:
         found_user = user_schema(client.pythontest.users.find_one(value))
         return user(**found_user)
-    except:
-        return {"error":"User not found"}
+    except Exception as e:
+        return e
 
-@user_routes.post("/user/singup", response_model=user,status_code=status.HTTP_201_CREATED)
+@user_routes.post("/user/sing-up", response_model=user,status_code=status.HTTP_201_CREATED)
 async def create_user(new_user: user) -> JSONResponse:
     user_dict = dict(new_user)
     del user_dict["id"]
@@ -59,6 +59,17 @@ def login(form_data:Annotated[OAuth2PasswordRequestForm, Depends()]):
     
     token = encode_token({"username":loging_user.username,"email":loging_user.email})
     return {"access_token":token}
+
+@user_routes.patch("/user",status_code=status.HTTP_200_OK)
+def update(my_user:Annotated[dict,Depends(decode_token)], updated_user:user):
+    user_dict:dict = dict(updated_user)
+    del user_dict["id"]
+    try:
+        client.pythontest.users.find_one_and_update({"email":my_user.email},user_dict)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=e)
+
+    return search_user_by_data({"email":my_user.email})
 
 @user_routes.get("/user/profile")
 def profile(my_user:Annotated[dict,Depends(decode_token)]):
